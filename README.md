@@ -58,6 +58,9 @@
 | Qt6 Multimedia | 使用 Qt6 且能找到 `Qt6::Multimedia` | 启用摄像头实时识别；未找到时应用仍可编译，但摄像头识别不可用 |
 | OpenCV | 能找到 `core`、`imgproc`、`imgcodecs`、`objdetect`、`videoio` 组件 | 当前作为预留适配依赖；未安装不会影响现有生成、文件识别和 Qt 图像预处理能力 |
 
+> Qt 5.14.2 可以运行生成、保存和图片识别功能。摄像头实时识别目前使用
+> Qt 6 Multimedia API，因此 Qt 5 构建不会启用摄像头功能。
+
 ### 常见安装提示
 
 Ubuntu/Debian 环境可参考：
@@ -98,5 +101,31 @@ cmake --build build
 ```
 
 配置阶段会检查 Qt Widgets 与 ZXing。若缺少必需依赖，`cmake -S . -B build` 会直接失败；若仅缺少可选依赖，CMake 会跳过对应能力并继续生成构建文件。
+
+### Windows + Qt 5.14.2 + Visual Studio
+
+项目包含 `vcpkg.json`，使用 vcpkg 工具链配置时会自动安装 ZXing-C++。请在
+“x64 Native Tools Command Prompt for Visual Studio”中运行，并将下面路径替换为本机路径：
+
+```bat
+cmake -S . -B build ^
+  -G Ninja ^
+  -DCMAKE_BUILD_TYPE=Debug ^
+  -DCMAKE_PREFIX_PATH=D:/qt/5.14.2/msvc2017_64 ^
+  -DCMAKE_TOOLCHAIN_FILE=D:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+  -DVCPKG_TARGET_TRIPLET=x64-windows
+cmake --build build --parallel
+```
+
+从普通终端启动 Debug 版本时，需要让系统找到 Qt DLL：
+
+```bat
+set PATH=D:\qt\5.14.2\msvc2017_64\bin;%PATH%
+build\ptapro.exe
+```
+
+Qt 套件与编译器架构必须一致：这里使用的是 64 位 MSVC Qt，因此应搭配 x64 MSVC
+和 `x64-windows` vcpkg triplet。若需要摄像头实时识别，请改装 Qt 6（包含 Multimedia）
+后重新配置一个全新的构建目录；只使用生成和图片识别功能时无需下载 Qt 6。
 
 

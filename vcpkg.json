@@ -1,0 +1,7 @@
+{
+  "name": "ptapro",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "nu-book-zxing-cpp"
+  ]
+}

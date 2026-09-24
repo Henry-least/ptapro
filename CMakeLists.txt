@@ -50,6 +50,12 @@ target_include_directories(ptapro
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# 源码和界面文案使用 UTF-8。MSVC 在中文 Windows 上默认按系统代码页读取
+# 无 BOM 的源文件，因此需要显式启用 UTF-8，避免中文字符串被误解析。
+if(MSVC)
+    target_compile_options(ptapro PRIVATE /utf-8)
+endif()
+
 target_link_libraries(ptapro
     PRIVATE
         ${PTAPRO_QT_PACKAGE}::Widgets
